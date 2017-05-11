@@ -24,8 +24,8 @@ namespace DiceGameOfLife_Dxlib
             {
                 for (int j = 0; j < Y; j++)
                 {
-                    uint color = (cells.alives[i, j]) ? DX.GetColor(0, 255, 0) : DX.GetColor(0, 0, 0);
-                    DX.DrawFillBox((int)grid * i, (int)grid * j, (int)grid * (i + 1), (int)grid * (j + 1), color);
+                    if(cells.alives[i,j])
+                        DX.DrawFillBox((int)grid * i, (int)grid * j, (int)grid * (i + 1), (int)grid * (j + 1), DX.GetColor(0, 255, 0));
                 }
             }
             
