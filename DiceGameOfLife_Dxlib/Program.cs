@@ -17,9 +17,9 @@ namespace DiceGameOfLife_Dxlib
             DX.POINTDATA mp = new DX.POINTDATA();
             DX.GetWindowSize(out Width, out Height);
 
-            core = new Core(Width, Height);
-            drawer = new Drawer();
-            cells = new Cells(core.X, core.Y);
+            core = new Core();
+            drawer = new Drawer(Width, Height);
+            cells = new Cells(drawer.X, drawer.Y);
             key = new Key();
             mouse = new Mouse();
 
@@ -32,9 +32,9 @@ namespace DiceGameOfLife_Dxlib
                 DX.GetMousePoint(out mp.x, out mp.y);
 
                 if (CellEnable)
-                    cells.Update(core.X, core.Y);
+                    cells.Update(drawer.X, drawer.Y);
 
-                drawer.Update(core, cells);
+                drawer.Update(cells);
                 key.Update();
                 mouse.Update();
 
@@ -42,9 +42,9 @@ namespace DiceGameOfLife_Dxlib
                 if (key.IsPressed(DX.KEY_INPUT_ESCAPE))
                     break;
                 if (key.IsPressing(DX.KEY_INPUT_MINUS))
-                    core.GridCount++;
+                    drawer.GridCount++;
                 if (key.IsPressing(DX.KEY_INPUT_SEMICOLON))
-                    core.GridCount--;
+                    drawer.GridCount--;
                 if (key.IsPressed(DX.KEY_INPUT_SPACE))
                     CellEnable = !CellEnable;
                 if (key.IsPressed(DX.KEY_INPUT_C))
@@ -54,9 +54,9 @@ namespace DiceGameOfLife_Dxlib
 
                 // mouse
                 if (mouse.IsPressing(DX.MOUSE_INPUT_LEFT))
-                    cells.alives[(int)(mp.x / core.Grid), (int)(mp.y / core.Grid)] = true;
+                    cells.alives[(int)(mp.x / drawer.Grid), (int)(mp.y / drawer.Grid)] = true;
                 if (mouse.IsPressing(DX.MOUSE_INPUT_RIGHT))
-                    cells.alives[(int)(mp.x / core.Grid), (int)(mp.y / core.Grid)] = false;
+                    cells.alives[(int)(mp.x / drawer.Grid), (int)(mp.y / drawer.Grid)] = false;
                 
                 DX.ScreenFlip();
             }
