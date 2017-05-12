@@ -19,7 +19,7 @@ namespace DiceGameOfLife_Dxlib
 
             core = new Core();
             drawer = new Drawer(Width, Height);
-            cells = new Cells(drawer.X, drawer.Y);
+            cells = new Cells();
             key = new Key();
             mouse = new Mouse();
 
@@ -31,13 +31,6 @@ namespace DiceGameOfLife_Dxlib
 
                 DX.GetMousePoint(out mp.x, out mp.y);
 
-                if (CellEnable)
-                    cells.Update(drawer.X, drawer.Y);
-
-                drawer.Update(cells);
-                key.Update();
-                mouse.Update();
-
                 // key
                 if (key.IsPressed(DX.KEY_INPUT_ESCAPE))
                     break;
@@ -47,17 +40,36 @@ namespace DiceGameOfLife_Dxlib
                     drawer.GridCount--;
                 if (key.IsPressed(DX.KEY_INPUT_SPACE))
                     CellEnable = !CellEnable;
+                if (key.IsPressed(DX.KEY_INPUT_RETURN))
+                    cells.Step();
                 if (key.IsPressed(DX.KEY_INPUT_C))
                     cells.Clear();
                 if (key.IsPressed(DX.KEY_INPUT_G))
                     drawer.ChangeGridDrawing();
 
+                if (key.IsPressing(DX.KEY_INPUT_LEFT))
+                    drawer.Origin.X++;
+                if (key.IsPressing(DX.KEY_INPUT_RIGHT))
+                    drawer.Origin.X--;
+                if (key.IsPressing(DX.KEY_INPUT_UP))
+                    drawer.Origin.Y++;
+                if (key.IsPressing(DX.KEY_INPUT_DOWN))
+                    drawer.Origin.Y--;
+                
                 // mouse
                 if (mouse.IsPressing(DX.MOUSE_INPUT_LEFT))
-                    cells.alives[(int)(mp.x / drawer.Grid), (int)(mp.y / drawer.Grid)] = true;
+                    cells.SetAlive(drawer.GetDrawPos(new Point(mp.x, mp.y)));
+
                 if (mouse.IsPressing(DX.MOUSE_INPUT_RIGHT))
-                    cells.alives[(int)(mp.x / drawer.Grid), (int)(mp.y / drawer.Grid)] = false;
+                    cells.SetDead(drawer.GetDrawPos(new Point(mp.x, mp.y)));
                 
+                if (CellEnable)
+                    cells.Update();
+
+                drawer.Draw(cells.GetAlivePoints(), cells.Origin);
+                key.Update();
+                mouse.Update();
+
                 DX.ScreenFlip();
             }
 
