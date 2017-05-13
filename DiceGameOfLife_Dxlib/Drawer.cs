@@ -24,7 +24,7 @@ namespace DiceGameOfLife_Dxlib
             set { gridCount = (value <= 0) ? 1 : value; }
         }
 
-        public int Grid { get { return System.Math.Min(Width, Height) / GridCount; } }
+        public int Grid { get { return Math.Min(Width, Height) / GridCount; } }
         
         public Point Origin
         {
@@ -46,7 +46,7 @@ namespace DiceGameOfLife_Dxlib
         public void Draw(List<Point> AlivesPoint, int cell_origin)
         {
             // 格子を描画
-            if (IsGridDrawing)
+            if (IsGridDrawing && Grid > 3)
             {
                 // y軸方向
                 for (int i = 0; i < Width; i++)
@@ -77,6 +77,8 @@ namespace DiceGameOfLife_Dxlib
                     Grid * (pos.X + 1), Grid * (pos.Y + 1),
                     DX.GetColor(0, 255, 0));
             }
+            
+            DX.DrawString(0, 0, $"Grid : {Grid}", DX.GetColor(255, 0, 0));
         }
 
         public Point GetDrawPos(Point p)

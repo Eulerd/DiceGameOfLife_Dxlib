@@ -69,7 +69,7 @@ namespace DiceGameOfLife_Dxlib
                 drawer.Draw(cells.GetAlivePoints(), cells.Origin);
                 key.Update();
                 mouse.Update();
-
+                
                 DX.ScreenFlip();
             }
 
