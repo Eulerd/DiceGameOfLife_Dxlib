@@ -4,32 +4,28 @@ namespace DiceGameOfLife_Dxlib
 {
     class Cells
     {
-        public int Origin
-        {
-            get { return MaxValue / 2; }
-        }
-        
         public void SetAlive(Point p)
         {
-            p.X += Origin;
-            p.Y += Origin;
-
             if (AlivePoints[flip].IndexOf(p) != -1)
                 return;
 
-            alives[flip][p.X, p.Y] = true;
+            if (alives[flip].ContainsKey(p))
+                alives[flip][p] = true; 
+            else
+                alives[flip].Add(p, true);
+
             AlivePoints[flip].Add(p);
         }
 
         public void SetDead(Point p)
         {
-            p.X += Origin;
-            p.Y += Origin;
-
             if (AlivePoints[flip].Count == 0)
                 return;
 
-            alives[flip][p.X, p.Y] = false;
+            if (alives[flip].ContainsKey(p))
+                alives[flip][p] = false;
+            else
+                alives[flip].Add(p, false);
             AlivePoints[flip].Remove(p);
         }
 
@@ -41,8 +37,8 @@ namespace DiceGameOfLife_Dxlib
         public void Update()
         {
             AlivePoints[NextFlip].Clear();
-            
-            AliveInit();
+
+            alives[NextFlip].Clear();
 
             foreach (Point p in AlivePoints[flip])
             {
@@ -51,10 +47,11 @@ namespace DiceGameOfLife_Dxlib
                     for (int j = p.Y - 1; j <= p.Y + 1; j++)
                     {
                         // 未確定なら
-                        if (alives[NextFlip][i, j] == null)
+                        Point pos = new Point(i, j);
+                        if (!alives[NextFlip].ContainsKey(pos))
                         {
-                            alives[NextFlip][i, j] = IsAliveNext(i, j);
-                            UsedPoints.Add(new Point(i, j));
+                            alives[NextFlip][pos] = IsAliveNext(i, j);
+                            UsedPoints.Add(pos);
                         }
                     }
                 }
@@ -81,13 +78,14 @@ namespace DiceGameOfLife_Dxlib
                     if (i == x && j == y)
                         continue;
 
-                    if (alives[flip][i, j] == true)
+                    Point p = new Point(i, j);
+                    if (alives[flip].ContainsKey(p) && alives[flip][p] == true)
                         count++;
                 }
             }
 
             bool isAlive;
-            if(alives[flip][x,y] == true)
+            if(alives[flip].ContainsKey(new Point(x, y)) && alives[flip][new Point(x, y)] == true)
                 isAlive = (count == 2 || count == 3);
             else
                 isAlive = count == 3;
@@ -103,7 +101,7 @@ namespace DiceGameOfLife_Dxlib
         /// </summary>
         public void Clear()
         {
-            alives[flip] = new bool?[MaxValue, MaxValue];
+            alives[NextFlip].Clear();
             AlivePoints[flip].Clear();
         }
 
@@ -111,12 +109,7 @@ namespace DiceGameOfLife_Dxlib
         {
             Update();
         }
-
-        void AliveInit()
-        {
-            foreach (Point p in UsedPoints)
-                alives[NextFlip][p.X, p.Y] = null;
-        }
+        
         
         private int NextFlip
         {
@@ -126,18 +119,13 @@ namespace DiceGameOfLife_Dxlib
         /// <summary>
         /// 各セルの生死
         /// </summary>
-        static bool?[][,] alives = { new bool?[MaxValue, MaxValue], new bool?[MaxValue, MaxValue] };
-
+        static Dictionary<Point, bool?>[] alives = { new Dictionary<Point, bool?>(), new Dictionary<Point, bool?>() };
+        
         /// <summary>
         /// 生きているセルの座標リスト
         /// </summary>
         static List<Point>[] AlivePoints = { new List<Point>(), new List<Point>() };
-
-        /// <summary>
-        /// 最大値
-        /// </summary>
-        const int MaxValue = 10000;
-
+        
         int flip = 0;
 
         List<Point> UsedPoints = new List<Point>();

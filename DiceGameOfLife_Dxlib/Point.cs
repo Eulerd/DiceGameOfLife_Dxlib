@@ -41,5 +41,10 @@
         {
             return this == (Point)(obj);
         }
+
+        public override int GetHashCode()
+        {
+            return X ^ Y;
+        }
     }
 }

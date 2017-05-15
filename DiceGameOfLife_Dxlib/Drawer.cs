@@ -43,7 +43,7 @@ namespace DiceGameOfLife_Dxlib
             IsGridDrawing = !IsGridDrawing;
         }
 
-        public void Draw(List<Point> AlivesPoint, int cell_origin)
+        public void Draw(List<Point> AlivesPoint)
         {
             // 格子を描画
             if (IsGridDrawing && Grid > 3)
@@ -70,7 +70,7 @@ namespace DiceGameOfLife_Dxlib
             // セルを描画
             foreach (Point p in AlivesPoint)
             {
-                pos = new Point(p.X - cell_origin + Origin.X, p.Y - cell_origin + Origin.Y);
+                pos = new Point(p.X + Origin.X, p.Y + Origin.Y);
                 
                 DX.DrawFillBox(
                     Grid * pos.X, Grid * pos.Y,

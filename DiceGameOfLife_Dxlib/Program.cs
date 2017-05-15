@@ -66,7 +66,7 @@ namespace DiceGameOfLife_Dxlib
                 if (CellEnable)
                     cells.Update();
 
-                drawer.Draw(cells.GetAlivePoints(), cells.Origin);
+                drawer.Draw(cells.GetAlivePoints());
                 key.Update();
                 mouse.Update();
                 
